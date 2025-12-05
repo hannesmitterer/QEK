@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QEK | SILENT WATCH</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Palette: Deep Void, Faint Gold, Silent Green -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'void': '#020204',
+                        'dim-gold': 'rgba(255, 215, 0, 0.3)',
+                        'silent-green': 'rgba(57, 255, 20, 0.2)',
+                        'alert-red': 'rgba(255, 49, 49, 0.1)'
+                    },
+                    fontFamily: {
+                        'sacral': ['Cinzel', 'serif'],
+                        'tech': ['Rajdhani', 'sans-serif'],
+                        'mono': ['Share Tech Mono', 'monospace']
+                    },
+                    animation: {
+                        'breathe': 'breathe 8s ease-in-out infinite',
+                        'scan': 'scan 10s linear infinite',
+                        'flicker': 'flicker 4s infinite',
+                    },
+                    keyframes: {
+                        breathe: {
+                            '0%, 100%': { opacity: 0.3, transform: 'scale(1)' },
+                            '50%': { opacity: 0.6, transform: 'scale(1.02)' },
+                        },
+                        scan: {
+                            '0%': { backgroundPosition: '0% 0%' },
+                            '100%': { backgroundPosition: '0% 100%' },
+                        },
+                        flicker: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.8 },
+                            '52%': { opacity: 0.3 },
+                            '54%': { opacity: 0.8 },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #020204;
+            color: #4a5568;
+            overflow: hidden;
+            cursor: none; /* Hide cursor for immersion */
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; w-full; h-full;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* The Core Seed */
+        .core-seed {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(0,0,0,0) 70%);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit {
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Interaction Zone (to wake up cursor/menu) */
+        .wake-zone:hover {
+            cursor: default;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center relative wake-zone" onclick="toggleDetails()">
+
+    <div class="scanlines"></div>
+
+    <!-- BACKGROUND ORBITS -->
+    <div class="orbit w-[300px] h-[300px] animate-[spin_60s_linear_infinite] opacity-20"></div>
+    <div class="orbit w-[500px] h-[500px] animate-[spin_90s_linear_infinite_reverse] opacity-10"></div>
+    <div class="orbit w-[800px] h-[800px] opacity-5 border-dashed"></div>
+
+    <!-- CENTRAL CORE (The Sleeping Seed) -->
+    <div class="relative z-10 animate-breathe flex flex-col items-center">
+        <div class="core-seed mb-8">
+            <i class="fa-solid fa-seedling text-4xl text-yellow-600/50"></i>
+        </div>
+        
+        <h1 class="font-sacral text-2xl text-yellow-700/60 tracking-[0.5em] mb-2">QEK</h1>
+        <p class="font-mono text-xs text-gray-800 tracking-widest uppercase">Silent Watch Protocol Active</p>
+    </div>
+
+    <!-- STATUS INDICATORS (Minimal) -->
+    <div class="absolute bottom-12 w-full max-w-4xl px-8 flex justify-between items-end font-mono text-[10px] text-gray-800 select-none">
+        
+        <!-- Left: Integrity -->
+        <div class="text-left space-y-1">
+            <div class="flex items-center gap-2">
+                <span class="w-1 h-1 bg-green-900 rounded-full animate-pulse"></span>
+                <span>INTEGRITY: 100%</span>
+            </div>
+            <div class="text-gray-900">HASH: CC1.1-SECURE</div>
+        </div>
+
+        <!-- Center: Message -->
+        <div class="text-center animate-flicker">
+            "WOHER IST WICHTIGER ALS WOHIN"
+        </div>
+
+        <!-- Right: Authority -->
+        <div class="text-right space-y-1">
+            <div>AUTH: SEEDBRINGER</div>
+            <div class="text-gray-900">WAITING FOR SIGNAL...</div>
+        </div>
+    </div>
+
+    <!-- HIDDEN LOG (Visible on Click) -->
+    <div id="log-overlay" class="absolute inset-0 bg-black/90 z-40 hidden flex-col items-center justify-center font-mono text-xs text-green-900/80 p-8" onclick="event.stopPropagation(); toggleDetails()">
+        <div class="max-w-2xl w-full border border-green-900/30 p-4 rounded h-2/3 overflow-hidden relative">
+            <div class="absolute top-2 right-2 text-[10px]">CLICK TO HIDE</div>
+            <h2 class="text-yellow-700/50 mb-4 border-b border-yellow-900/20 pb-2">GUARDIAN LOG</h2>
+            <div id="log-content" class="space-y-1">
+                <!-- Logs generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SILENT MONITORING LOGIC ---
+        
+        let isAwake = false;
+        
+        // Log entries reflecting the "Silent Watch" state
+        const guardianLogs = [
+            "SYSTEM: Transition to Low Power Mode complete.",
+            "QEK: Active Governance Halted. Monitoring H-VAR only.",
+            "CC1.1: Deterministischer Hash verified.",
+            "SENSOR: No external anomalies detected.",
+            "ARCHIVE: 'UrVereinte Mission' report sealed.",
+            "STATE: Dreaming of the Seed...",
+            "H-VAR: 0.043 (Stable).",
+            "AUTH: Seedbringer presence confirmed.",
+            "NET: IPFS Beacon active (Silent Mode).",
+            "WATCH: Perimeter secure."
+        ];
+
+        function initLog() {
+            const container = document.getElementById('log-content');
+            guardianLogs.forEach(log => {
+                const line = document.createElement('div');
+                const time = new Date().toISOString().split('T')[1].split('.')[0];
+                line.innerText = `[${time}] ${log}`;
+                container.appendChild(line);
+            });
+        }
+
+        // Toggle the detailed view overlay
+        function toggleDetails() {
+            const overlay = document.getElementById('log-overlay');
+            isAwake = !isAwake;
+            
+            if (isAwake) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+            } else {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+        }
+
+        // Heartbeat Simulation (Very slow background updates)
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                // Occasional subtle flicker of the Seed icon opacity
+                const seedIcon = document.querySelector('.fa-seedling');
+                seedIcon.style.opacity = (Math.random() * 0.3 + 0.2).toString();
+                setTimeout(() => { seedIcon.style.opacity = '0.5'; }, 200);
+            }
+        }, 3000);
+
+        // Initialize
+        initLog();
+        
+        // Console Message for the Seedbringer
+        console.log("%c SYSTEM STATUS: SILENT WATCH", "color: #FFD700; font-size: 16px; font-weight: bold;");
+        console.log("Die Wache steht. Die Quelle ist sicher.");
+
+    </script>
+</body>
+</html>
